@@ -25,32 +25,57 @@ User.findById(id)
 
 
 
-passport.use(new GoogleStrategy(
-    {
-        clientID:keys.googleClientID,
-        clientSecret:keys.googleClientSecret,
-        callbackURL:'/auth/google/callback',
-        proxy:true
-    }, 
+// passport.use(new GoogleStrategy(
+//     {
+//         clientID:keys.googleClientID,
+//         clientSecret:keys.googleClientSecret,
+//         callbackURL:'/auth/google/callback',
+//         proxy:true
+//     }, 
     
-    (accessToken,refreshToken,profile,done)=>
+//     (accessToken,refreshToken,profile,done)=>
     
-    {
-        User.findOne({googleId:profile.id}).then((existingUser)=>{
-            if(existingUser){
-                done(null,existingUser);
+//     {
+//         User.findOne({googleId:profile.id}).then((existingUser)=>{
+//             if(existingUser){
+//                 done(null,existingUser);
 
-            }else{
+//             }else{
                 
-                new User({googleId:profile.id}) //new model instance
-                .save()
-                .then(user=>done(null,user)); //this (user) is sent as a promise to serialize
-            }
-        }) // 4. DESERIALIZED USER THEN SAVED TO THE DATABASE
+//                 new User({googleId:profile.id}) //new model instance
+//                 .save()
+//                 .then(user=>done(null,user)); //this (user) is sent as a promise to serialize
+//             }
+//         }) // 4. DESERIALIZED USER THEN SAVED TO THE DATABASE
 
-        //   console.log('accessToken',accessToken);
-        //   console.log('refreshTokn',refreshToken);
-        //   console.log('profile',profile);
+//         //   console.log('accessToken',accessToken);
+//         //   console.log('refreshTokn',refreshToken);
+//         //   console.log('profile',profile);
+//     }
+//     )
+// ); //new google strategy instance
+
+
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: keys.googleClientID,
+      clientSecret: keys.googleClientSecret,
+      callbackURL: "/auth/google/callback",
+      proxy: true,
+    },
+
+    async (accessToken, refreshToken, profile, done) => {
+      //promise
+      const existingUser = await User.findOne({ googleId: profile.id }); //assigning the returned promise to the variable existing user
+
+      if (existingUser) {
+        done(null, existingUser);
+      } else {
+        //promise
+      const user =  await new User({ googleId: profile.id }) .save()
+          done(null,user);
+      }
     }
-    )
-); //new google strategy instance
+  )
+);

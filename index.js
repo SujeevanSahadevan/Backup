@@ -2,16 +2,20 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieSession=require('cookie-session');
 const passport=require('passport');
+const bodyParser=require('body-parser');
 const authRoutes = require('./routes/authRoutes');
 const keys = require('./config/keys');
 require('./models/User');
 require('./services/passport');
+const billingRoutes = require('./routes/billingRoutes')
 
 
 mongoose.connect(keys.mongoURI);
 
 
 const app = express();
+
+app.use(bodyParser.json());
 
 
 app.use(
@@ -25,6 +29,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 authRoutes(app);
+billingRoutes(app);
+
 
 // app.get('/',
 // (req,res)=>
