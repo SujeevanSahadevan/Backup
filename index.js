@@ -31,6 +31,17 @@ app.use(passport.session());
 authRoutes(app);
 billingRoutes(app);
 
+if(process.env.NODE_ENV==='production'){
+    app.use(express.static('clint/build'));
+    //express will serve up production assets eg:main.css
+    //will serve up index.html if express doesnt recognize the route
+
+    const path =require('path');
+    app.get('*',(req,res)=>{
+        res.sendFile(path.resolve(__dirname,'client','build',index.html));
+    })
+}
+
 
 // app.get('/',
 // (req,res)=>
