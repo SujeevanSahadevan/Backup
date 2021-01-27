@@ -32,7 +32,7 @@ authRoutes(app);
 billingRoutes(app);
 
 if(process.env.NODE_ENV==='production'){
-    app.use(express.static('clint/build'));
+    app.use(express.static('client/build'));
     //express will serve up production assets eg:main.css
     //will serve up index.html if express doesnt recognize the route
 
